@@ -15,4 +15,29 @@ class CustomException : public runtime_error{
     explicit CustomException(const string &message):runtime_error(message){}
 };
 
+// More specific exceptions (optional, for clarity)
+class LexicalException : public CustomException {
+public:
+    explicit LexicalException(const std::string &message)
+        : CustomException("Lexical Error: " + message) {}
+};
+
+class SyntaxException : public CustomException {
+public:
+    explicit SyntaxException(const std::string &message)
+        : CustomException("Syntax Error: " + message) {}
+};
+
+class SemanticException : public CustomException {
+public:
+    explicit SemanticException(const std::string &message)
+        : CustomException("Semantic Error: " + message) {}
+};
+
+class RuntimeDatabaseException : public CustomException {
+public:
+    explicit RuntimeDatabaseException(const std::string &message)
+        : CustomException("Runtime Error: " + message) {}
+};
+
 #endif // !EXCEPTIONS_H

@@ -93,6 +93,36 @@ class DeleteNode : public StatementNode {
     }
 };
 
+class ComparisionNode : public ExpressionNode {
+    private:
+    string m_column;
+    string m_op;
+    string m_value;
+    TokenType m_valueType;
 
+    public:
+    ComparisionNode(const string &column,const string &op, const string &value,TokenType valueType){
+        m_column=column;
+        m_op=op;
+        m_value=value;
+        m_valueType=valueType;
+    }
+
+    const string &getColumnName(){
+        return m_column;
+    }
+
+    const string &getOp(){
+        return m_op;
+    }
+
+    const string &getValue(){
+        return m_value;
+    }
+
+    TokenType getValueType(){
+        return m_valueType;
+    }
+};
 
 #endif

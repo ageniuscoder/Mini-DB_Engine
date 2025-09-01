@@ -6,6 +6,7 @@
 #include "AST.h"
 using namespace std;
 
+// Concrete node for a CREATE TABLE statement.
 class CreateTableNode : public StatementNode{
     private:
     string m_tableName;
@@ -27,6 +28,7 @@ class CreateTableNode : public StatementNode{
 
 };
 
+// Concrete node for a  SELECT statement.
 class SelectNode : public StatementNode {
     private:
     string m_tableName;
@@ -53,6 +55,7 @@ class SelectNode : public StatementNode {
     }
 };
 
+// Concrete node for a INSERT statement.
 class InsertNode : public StatementNode{
     private:
     string m_tableName;
@@ -73,6 +76,8 @@ class InsertNode : public StatementNode{
     }
 };
 
+
+// Concrete node for a DELETE statement.
 class DeleteNode : public StatementNode {
     private:
     string m_tableName;
@@ -93,6 +98,8 @@ class DeleteNode : public StatementNode {
     }
 };
 
+
+// Concrete node for a comparison expression (part of Where Clause).
 class ComparisionNode : public ExpressionNode {
     private:
     string m_column;

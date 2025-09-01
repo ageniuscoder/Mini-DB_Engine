@@ -73,4 +73,26 @@ class InsertNode : public StatementNode{
     }
 };
 
+class DeleteNode : public StatementNode {
+    private:
+    string m_tableName;
+    unique_ptr<ExpressionNode> m_whereClause;
+
+    public:
+    DeleteNode(const string &tableName, unique_ptr<ExpressionNode> whereClause){
+        m_tableName=tableName;
+        m_whereClause=move(whereClause);
+    }
+
+    const string &getTableName(){
+        return m_tableName;
+    }
+
+    const unique_ptr<ExpressionNode> &getWhereClause(){
+        return m_whereClause;
+    }
+};
+
+
+
 #endif

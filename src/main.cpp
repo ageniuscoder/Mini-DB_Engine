@@ -1,12 +1,10 @@
+#include "frontend/lexer.hpp"
 #include <iostream>
-#include "Utils/Exceptions.h"
 using namespace std;
-int main(){
-    try{
-        throw CustomException("Database connection failed");
 
-    }catch(const CustomException &e){
-        cerr<<"Caught CustomException: "<<e.what()<<endl;
-
-    }
+int main() {
+    cout << "This is from the main program" << endl;
+    Lexer mainLexer;
+    cout << "This is END" << endl;
+    return 0;
 }

@@ -22,4 +22,10 @@ struct Token {
     std::string value;  // The actual text value (e.g., "SELECT", "users")
 };
 
+// A struct to represent a column definition for CREATE TABLE.
+struct ColumnDefinition {
+    std::string name;
+    std::string type;
+};
+
 #endif // TYPES_H

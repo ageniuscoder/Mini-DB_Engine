@@ -6,13 +6,13 @@
 #include "AST.h"
 using namespace std;
 
-class CreateTable : public StatementNode{
+class CreateTableNode : public StatementNode{
     private:
     string m_tableName;
     vector<ColumnDefinition> m_columns;
 
     public:
-    CreateTable(const string &tableName,const vector<ColumnDefinition> &columns){
+    CreateTableNode(const string &tableName,const vector<ColumnDefinition> &columns){
         m_tableName=tableName;
         m_columns=columns;
     }
@@ -27,14 +27,14 @@ class CreateTable : public StatementNode{
 
 };
 
-class SelectTable : public StatementNode {
+class SelectNode : public StatementNode {
     private:
     string m_tableName;
     vector<string> m_columns;
     unique_ptr<ExpressionNode> m_whereClause;
 
     public:
-    SelectTable(const string &tableName,const vector<string> &columns, unique_ptr<ExpressionNode> whereClause){
+    SelectNode(const string &tableName,const vector<string> &columns, unique_ptr<ExpressionNode> whereClause){
         m_tableName=tableName;
         m_columns=columns;
         m_whereClause=move(whereClause);
@@ -50,6 +50,26 @@ class SelectTable : public StatementNode {
 
     const unique_ptr<ExpressionNode> &getWhereClause(){
         return m_whereClause;
+    }
+};
+
+class InsertNode : public StatementNode{
+    private:
+    string m_tableName;
+    vector<string> m_values;
+
+    public:
+    InsertNode(const string &tableName, const vector<string> &values){
+        m_tableName=tableName;
+        m_values=values;
+    }
+
+    const string &getTableName(){
+        return m_tableName;
+    }
+
+    const vector<string> &getValues(){
+        return m_values;
     }
 };
 

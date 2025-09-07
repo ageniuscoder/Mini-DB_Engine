@@ -1,10 +1,17 @@
-#include "frontend/lexer.hpp"
+#include "frontend/evaluationWrapper.cpp"
 #include <iostream>
 using namespace std;
 
-int main() {
-    cout << "This is from the main program" << endl;
-    Lexer mainLexer;
-    cout << "This is END" << endl;
-    return 0;
+int main()
+{
+    string inputBuffer;  // may be we will make it a class of its own
+    EvaluationWrapper* main_io = new EvaluationWrapper();
+    while (true)
+    {
+        cout << "DB_Engine : "; 
+        getline(cin, inputBuffer);
+        main_io->handle(inputBuffer);
+
+    }
 }
+ 

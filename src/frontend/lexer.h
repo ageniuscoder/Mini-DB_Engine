@@ -29,7 +29,8 @@ typedef enum
     TOKEN_WITH,
     TOKEN_EXIT,
 
-    TOKEN_STRING, // this would be for the name of ad and stuff
+    TOKEN_ID,
+    TOKEN_STRING,
     TOKEN_INTEGER,
     TOKEN_LEFT_PAREN,
     TOKEN_RIGHT_PAREN,
@@ -82,6 +83,8 @@ string tokenTypeToString(TOKEN_SET REQUIRED_TOKEN)
         return "TOKEN_WITH";
     case TOKEN_EXIT:
         return "    TOKEN_EXIT";
+    case TOKEN_ID:
+        return "TOKEN_ID";
     case TOKEN_STRING:
         return "TOKEN_STRING";
     case TOKEN_INTEGER:
@@ -150,14 +153,16 @@ private:
     int cursor;
     int length;
     char current;
+    bool stringParsingError;
     string localInputBuffer;
     vector<TOKEN *> TOKEN_LIST;
 
     char advance();
     void skipWhiteSpaces();
-    TOKEN *tokenizeAlpha();
+    TOKEN *tokenizeID();
     TOKEN *tokenizeInteger();
     TOKEN *tokenizeSpecial(TOKEN_SET NEW_TOKEN_TYPE);
+    TOKEN *tokenizeString();
 
 public:
     Lexer(); // this is main lexer constructor
@@ -165,6 +170,7 @@ public:
     void displayAllTokens();
     LEXER_STATUS tokenize();
     LEXER_STATUS throwLexerError();
+    LEXER_STATUS throwStringParsingError();
 };
 
 #endif

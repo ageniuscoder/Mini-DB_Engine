@@ -2,6 +2,9 @@
 #include "lexer.h"
 using namespace std;
 
+#define FAIL "\e[0;31m"
+#define DEFAULT "\e[0;37m"
+
 Lexer::Lexer() {}
 
 void Lexer::skipWhiteSpaces() // deal with end whitespaces in the cmmand
@@ -19,7 +22,7 @@ LEXER_STATUS Lexer::tokenize()
         skipWhiteSpaces();
         if (isalpha(current))
         {
-            TOKEN_LIST.push_back(tokenizeAlpha());
+            TOKEN_LIST.push_back(tokenizeID());
         }
         else if (isdigit(current))
         {
@@ -64,6 +67,15 @@ LEXER_STATUS Lexer::tokenize()
                 TOKEN_LIST.push_back(tokenizeSpecial(TOKEN_GREATER_THAN));
                 break;
             }
+            case '"':
+            {
+                TOKEN_LIST.push_back(tokenizeString());
+                if (stringParsingError)
+                {
+                    return throwStringParsingError();
+                }
+                break;
+            }
             default:
             {
                 return throwLexerError();
@@ -82,6 +94,7 @@ void Lexer::intialize(string inputBuffer)
     localInputBuffer = inputBuffer;
     current = localInputBuffer[cursor];
     TOKEN_LIST.clear();
+    stringParsingError = false;
 }
 
 char Lexer::advance()
@@ -97,7 +110,29 @@ char Lexer::advance()
     return current;
 }
 
-TOKEN *Lexer::tokenizeAlpha()
+TOKEN *Lexer::tokenizeString()
+{
+    advance(); // advancing the opening quotes
+    TOKEN *newToken = new TOKEN;
+    string temporaryBuffer = "";
+    while (current != '"')
+    {
+        if (current == '\0')
+        {
+            stringParsingError = true;
+            break;
+        }
+        temporaryBuffer.push_back(current);
+        advance();
+    }
+
+    advance(); // advancing the closing quotes
+    newToken->TOKEN_TYPE = TOKEN_STRING;
+    newToken->VALUE = temporaryBuffer;
+    return newToken;
+}
+
+TOKEN *Lexer::tokenizeID()
 {
     TOKEN *newToken = new TOKEN;
     string temporaryBuffer = "";
@@ -111,7 +146,7 @@ TOKEN *Lexer::tokenizeAlpha()
         advance();
     }
 
-    newToken->TOKEN_TYPE = TOKEN_STRING;
+    newToken->TOKEN_TYPE = TOKEN_ID;
     newToken->VALUE = temporaryBuffer;
 
     if (KEYWORD_MAP.find(newToken->VALUE) != KEYWORD_MAP.end())
@@ -146,7 +181,14 @@ TOKEN *Lexer::tokenizeSpecial(TOKEN_SET NEW_TOKEN_TYPE)
 {
     TOKEN *newToken = new TOKEN;
     newToken->TOKEN_TYPE = NEW_TOKEN_TYPE;
-    newToken->VALUE = current;
+    if (newToken->TOKEN_TYPE == TOKEN_EQUALS)
+    {
+        newToken->VALUE = "==";
+    }
+    else
+    {
+        newToken->VALUE = current;
+    }
     advance();
     return newToken;
 }
@@ -162,6 +204,12 @@ void Lexer::displayAllTokens()
 
 LEXER_STATUS Lexer::throwLexerError()
 {
-    cout << "[!] LEXER ERROR : UNIDENTIFIED CHARACTER  AT INDEX: " << cursor << " : " << current << endl;
+    cout << FAIL << "[!] LEXER ERROR : UNIDENTIFIED CHARACTER  AT INDEX: " << cursor << " : " << current << DEFAULT << endl;
+    return LEXER_FAIL;
+}
+
+LEXER_STATUS Lexer::throwStringParsingError()
+{
+    cout << FAIL << "[!] LEXER ERROR : CLOSING QUOTES NOT FOUND IN THE STRING PRESENT IN GIVEN COMMAND :" << cursor << "  " << current << DEFAULT << endl;
     return LEXER_FAIL;
 }

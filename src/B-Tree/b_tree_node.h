@@ -8,9 +8,9 @@ template <typename tree_type,int t=3>
 class BTreeNode{
     public:
     std::vector<tree_type> keys;    //stores the keys within the node.
-    std::vector<BTreeNode*> children;
+    std::vector<BTreeNode*> children; //pointer to child node
     bool leaf;     //is leaf node or not
-    int n;    //no of keys in node
+    int n;    //no of keys currently in node
 
     BTreeNode(bool isLeaf=true){
         leaf=isLeaf;
@@ -19,10 +19,10 @@ class BTreeNode{
         children.reserve(2*t);
     }
 
-    //node operation
-    int findKey(tree_type k){
+    //insertion opearation 
+    int findKey(tree_type key){
         int idx=0;
-        while(idx<n && keys[idx]<k){
+        while(idx<n && keys[idx]<key){
             idx++;
         }
         return idx;
@@ -82,6 +82,17 @@ class BTreeNode{
             children[i]->insertNonFull(k);
         }
     }
+
+    //deletion operations
+    void removeFromLeaf(int idx);
+    void removeFromNonLeaf(int idx);
+    tree_type getPred(int idx);
+    tree_type getSucc(int idx);
+    void fill(int idx);
+    void borrowFromPrev(int idx);
+    void borrowFromNext(int idx);
+    void merge(int idx);
+
 
     void remove(tree_type k)
     {

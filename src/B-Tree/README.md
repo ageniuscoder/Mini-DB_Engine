@@ -19,8 +19,7 @@ b-trees/
 ├── b_tree.h
 ├── b_tree_node.h
 ├── key_container.h
-└── src/
-└── (Empty)
+
 
 
 - `key_container.h`: A helper class that encapsulates a key and a file offset.

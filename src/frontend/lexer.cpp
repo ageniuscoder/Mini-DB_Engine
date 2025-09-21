@@ -76,6 +76,10 @@ LEXER_STATUS Lexer::tokenize()
                 }
                 break;
             }
+            case '\0':
+            {
+                break;
+            }
             default:
             {
                 return throwLexerError();
@@ -84,6 +88,9 @@ LEXER_STATUS Lexer::tokenize()
         }
     }
     displayAllTokens();
+    TOKEN *END_TOKEN = new TOKEN;
+    END_TOKEN->TOKEN_TYPE = TOKEN_END_OF_INPUT;
+    TOKEN_LIST.push_back(END_TOKEN);
     return LEXER_SUCCESS;
 }
 
@@ -108,6 +115,11 @@ char Lexer::advance()
         current = localInputBuffer[++cursor];
     }
     return current;
+}
+
+vector<TOKEN *> *Lexer::getTokenStream()
+{
+    return &TOKEN_LIST;
 }
 
 TOKEN *Lexer::tokenizeString()

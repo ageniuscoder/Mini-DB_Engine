@@ -2,9 +2,6 @@
 #include <iostream>
 using namespace std;
 
-#define FAIL "\e[0;31m"
-#define SUCCESS "\e[0;32m"
-#define DEFAULT "\e[0;37m"
 
 int main()
 {

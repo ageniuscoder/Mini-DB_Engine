@@ -39,6 +39,7 @@ typedef enum
     TOKEN_EQUALS,
     TOKEN_LESS_THAN,
     TOKEN_GREATER_THAN,
+    TOKEN_END_OF_INPUT,
 } TOKEN_SET;
 
 struct TOKEN
@@ -82,7 +83,7 @@ string tokenTypeToString(TOKEN_SET REQUIRED_TOKEN)
     case TOKEN_WITH:
         return "TOKEN_WITH";
     case TOKEN_EXIT:
-        return "    TOKEN_EXIT";
+        return "TOKEN_EXIT";
     case TOKEN_ID:
         return "TOKEN_ID";
     case TOKEN_STRING:
@@ -103,8 +104,8 @@ string tokenTypeToString(TOKEN_SET REQUIRED_TOKEN)
         return "TOKEN_LESS_THAN";
     case TOKEN_GREATER_THAN:
         return "TOKEN_GREATER_THAN";
-    default:
-        return "Unindentified Token!";
+    case TOKEN_END_OF_INPUT:
+        return "TOKEN_END_OF_INPUT";
     }
     return "[!] ERROR :  UNIDENTIFIED TOKEN : " + REQUIRED_TOKEN;
 };
@@ -171,6 +172,7 @@ public:
     LEXER_STATUS tokenize();
     LEXER_STATUS throwLexerError();
     LEXER_STATUS throwStringParsingError();
+    vector<TOKEN *> *getTokenStream();
 };
 
 #endif

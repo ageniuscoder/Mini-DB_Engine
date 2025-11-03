@@ -1,178 +1,107 @@
-#pragma once
 #ifndef __LEXER_H
 #define __LEXER_H
+
 #include <bits/stdc++.h>
 using namespace std;
 
+#define FAIL "\e[0;31m"
+#define SUCCESS "\e[0;32m"
+#define DEFAULT "\e[0;37m"
+#define BLUE "\e[1;34m"
+#define YELLOW "\e[0;33m"
+#define DB_PROMPT "Dharana $ "
+
 typedef enum
 {
-    LEXER_FAIL,
     LEXER_SUCCESS,
+    LEXER_FAIL
 } LEXER_STATUS;
 
 typedef enum
 {
-    TOKEN_INSERT,
-    TOKEN_INTO,
-    TOKEN_VALUE,
-    TOKEN_DELETE,
-    TOKEN_FROM,
-    TOKEN_SEARCH,
-    TOKEN_IN,
-    TOKEN_CREATE,
-    TOKEN_NEW,
-    TOKEN_DATABASE,
-    TOKEN_TABLE,
-    TOKEN_USE,
-    TOKEN_UPDATE,
-    TOKEN_WHERE,
-    TOKEN_WITH,
-    TOKEN_EXIT,
-
-    TOKEN_ID,
+    TOKEN_INT,
+    TOKEN_FLOAT,
     TOKEN_STRING,
-    TOKEN_INTEGER,
+    TOKEN_CHAR,
+    TOKEN_BOOL,
+    TOKEN_DATE,
+    TOKEN_TIME,
+    TOKEN_NEW,
+    TOKEN_DOUBLE_COLON,
+    TOKEN_DOT,
+    TOKEN_COMMA,
+    TOKEN_ADD,
+    TOKEN_LEFT_SQR_BRACKET,
+    TOKEN_RIGHT_SQR_BRACKET,
     TOKEN_LEFT_PAREN,
     TOKEN_RIGHT_PAREN,
-    TOKEN_QUOTES,
-    TOKEN_COMMA,
+    TOKEN_STRING_DATA,
+    TOKEN_INT_DATA,
+    TOKEN_FLOAT_DATA,
+    TOKEN_TRUE,
+    TOKEN_FALSE,
+    TOKEN_CREATE,
+    TOKEN_USE,
+    TOKEN_PRINT,
+    TOKEN_REMOVE,
+    TOKEN_SERVER,
+    TOKEN_SERVER_CONNECT,
+    TOKEN_SERVER_CREATE,
+    TOKEN_UPDATE,
+    TOKEN_NOT,
+    TOKEN_OR,
+    TOKEN_AND,
+    TOKEN_ARROW,
+    TOKEN_EQUAL_TO,
     TOKEN_EQUALS,
+    TOKEN_NOT_EQUALS,
     TOKEN_LESS_THAN,
     TOKEN_GREATER_THAN,
+    TOKEN_LESS_THAN_EQUALS,
+    TOKEN_GREATER_THAN_EQUALS,
+    TOKEN_ID,
+    TOKEN_EXIT,
     TOKEN_END_OF_INPUT,
+    TOKEN_COLON,
+    TOKEN_PRIMARY,
+    TOKEN_EXPORT
 } TOKEN_SET;
 
 struct TOKEN
 {
     TOKEN_SET TOKEN_TYPE;
     string VALUE;
+    int position;
 };
 
-string tokenTypeToString(TOKEN_SET REQUIRED_TOKEN)
-{
-    switch (REQUIRED_TOKEN)
-    {
-    case TOKEN_INSERT:
-        return "TOKEN_INSERT";
-    case TOKEN_INTO:
-        return "TOKEN_INTO";
-    case TOKEN_VALUE:
-        return "TOKEN_VALUE";
-    case TOKEN_DELETE:
-        return "TOKEN_DELETE";
-    case TOKEN_FROM:
-        return "TOKEN_FROM";
-    case TOKEN_SEARCH:
-        return "TOKEN_SEARCH";
-    case TOKEN_IN:
-        return "TOKEN_IN";
-    case TOKEN_CREATE:
-        return "TOKEN_CREATE";
-    case TOKEN_NEW:
-        return "TOKEN_NEW";
-    case TOKEN_DATABASE:
-        return "TOKEN_DATABASE";
-    case TOKEN_TABLE:
-        return "TOKEN_TABLE";
-    case TOKEN_USE:
-        return "TOKEN_USE";
-    case TOKEN_UPDATE:
-        return "TOKEN_UPDATE";
-    case TOKEN_WHERE:
-        return "TOKEN_WHERE";
-    case TOKEN_WITH:
-        return "TOKEN_WITH";
-    case TOKEN_EXIT:
-        return "TOKEN_EXIT";
-    case TOKEN_ID:
-        return "TOKEN_ID";
-    case TOKEN_STRING:
-        return "TOKEN_STRING";
-    case TOKEN_INTEGER:
-        return "TOKEN_INTEGER";
-    case TOKEN_LEFT_PAREN:
-        return "TOKEN_LEFT_PAREN";
-    case TOKEN_RIGHT_PAREN:
-        return "TOKEN_RIGHT_PAREN";
-    case TOKEN_COMMA:
-        return "TOKEN_COMMA";
-    case TOKEN_QUOTES:
-        return "TOKEN_QUOTES";
-    case TOKEN_EQUALS:
-        return "TOKEN_EQUALS";
-    case TOKEN_LESS_THAN:
-        return "TOKEN_LESS_THAN";
-    case TOKEN_GREATER_THAN:
-        return "TOKEN_GREATER_THAN";
-    case TOKEN_END_OF_INPUT:
-        return "TOKEN_END_OF_INPUT";
-    }
-    return "[!] ERROR :  UNIDENTIFIED TOKEN : " + REQUIRED_TOKEN;
-};
+extern unordered_map<string, TOKEN_SET> KEYWORD_MAP;
 
-unordered_map<string, TOKEN_SET> KEYWORD_MAP = {
-    // for lowercase
-    {"insert", TOKEN_INSERT},
-    {"into", TOKEN_INTO},
-    {"value", TOKEN_VALUE},
-    {"delete", TOKEN_DELETE},
-    {"from", TOKEN_FROM},
-    {"search", TOKEN_SEARCH},
-    {"in", TOKEN_IN},
-    {"create", TOKEN_CREATE},
-    {"new", TOKEN_NEW},
-    {"database", TOKEN_DATABASE},
-    {"table", TOKEN_TABLE},
-    {"use", TOKEN_USE},
-    {"update", TOKEN_UPDATE},
-    {"where", TOKEN_WHERE},
-    {"with", TOKEN_WITH},
-    {"exit", TOKEN_EXIT},
-
-    // for uppercase
-    {"INSERT", TOKEN_INSERT},
-    {"INTO", TOKEN_INTO},
-    {"VALUE", TOKEN_VALUE},
-    {"DELETE", TOKEN_DELETE},
-    {"FROM", TOKEN_FROM},
-    {"SEARCH", TOKEN_SEARCH},
-    {"IN", TOKEN_IN},
-    {"CREATE", TOKEN_CREATE},
-    {"NEW", TOKEN_NEW},
-    {"DATABASE", TOKEN_DATABASE},
-    {"TABLE", TOKEN_TABLE},
-    {"USE", TOKEN_USE},
-    {"UPDATE", TOKEN_UPDATE},
-    {"WHERE", TOKEN_WHERE},
-    {"WITH", TOKEN_WITH},
-    {"EXIT", TOKEN_EXIT},
-};
-
+extern string tokenTypeToString(TOKEN_SET REQUIRED_TOKEN);
 class Lexer
 {
 private:
-    int cursor;
-    int length;
+    int cursor, length;
     char current;
-    bool stringParsingError;
-    string localInputBuffer;
+    string LocalInputBuffer;
     vector<TOKEN *> TOKEN_LIST;
+    bool stringParsingError;
 
     char advance();
     void skipWhiteSpaces();
+    TOKEN *tokenizeSTRING();
     TOKEN *tokenizeID();
-    TOKEN *tokenizeInteger();
-    TOKEN *tokenizeSpecial(TOKEN_SET NEW_TOKEN_TYPE);
-    TOKEN *tokenizeString();
-
-public:
-    Lexer(); // this is main lexer constructor
-    void intialize(string inputBuffer);
-    void displayAllTokens();
-    LEXER_STATUS tokenize();
+    TOKEN *tokenizeNUMBER();
+    TOKEN *tokenizeSPECIAL(TOKEN_SET);
     LEXER_STATUS throwLexerError();
     LEXER_STATUS throwStringParsingError();
+    void displayAllTokens();
+
+public:
+    Lexer();
+    void initialize(string InputBuffer);
+    LEXER_STATUS tokenize();
     vector<TOKEN *> *getTokenStream();
+    char seek(int offset);
 };
 
 #endif

@@ -1,30 +1,40 @@
-#pragma once
 #ifndef __PARSER_H
 #define __PARSER_H
-#include "lexer.h"
 
+#include "lexer.cpp"
 typedef enum
 {
-    PARSER_FAIL,
     PARSER_SUCCESS,
+    PARSER_FAIL
 } PARSER_STATUS;
 
 typedef enum
 {
-    NODE_CREATE_DATABASE,
-    NODE_CREATE_TABLE,
-    NODE_USE,
-    NODE_INSERT,
-    NODE_SEARCH,
-    NODE_DELETE,
+    NODE_NEW,
+    NODE_ADD,
+    NODE_PRINT,
     NODE_UPDATE,
-    NODE_STRING,
-    NODE_INTEGER,
-    NODE_SUB_VALUES,
+    NODE_REMOVE,
+    NODE_EXIT,
+    NODE_NOT,
+    NODE_AND,
+    NODE_OR,
+    NODE_CONDITION,
     NODE_CONDITION_EQUALS,
+    NODE_CONDITION_NOT_EQUALS,
     NODE_CONDITION_GREATER_THAN,
     NODE_CONDITION_LESS_THAN,
-    NODE_EXIT,
+    NODE_CONDITION_LESS_THAN_EQUALS,
+    NODE_CONDITION_GREATER_THAN_EQUALS,
+    NODE_SUB_VALUES,
+    NODE_STRING,
+    NODE_INT,
+    NODE_FLOAT,
+    NODE_SERVER_CREATE,
+    NODE_SERVER_CONNECT,
+    NODE_CREATE_DATABASE,
+    NODE_USE_DATABASE,
+    NODE_EXPORT
 } NODE_SET;
 
 struct AST_NODE
@@ -32,74 +42,59 @@ struct AST_NODE
     NODE_SET NODE_TYPE;
     string *PAYLOAD;
     string *SUB_PAYLOAD;
+    vector<string> DATA_LIST;
+    AST_NODE *CHILD;
     vector<AST_NODE *> CHILDREN;
-    vector<AST_NODE *> UPDATE_CHILDREN;
+    vector<vector<AST_NODE *>> MULTI_DATA;
+    TOKEN_SET HELPER_TOKEN;
+    bool isPrimary;
+    AST_NODE()
+    {
+        CHILD = nullptr;
+        isPrimary = false;
+    }
 };
 
-string nodeTypeToString(NODE_SET REQUIRED_NODE)
-{
-    switch (REQUIRED_NODE)
-    {
-    case NODE_CREATE_DATABASE:
-        return "NODE_CREATE_DATABASE";
-    case NODE_CREATE_TABLE:
-        return "NODE_CREATE_TABLE";
-    case NODE_USE:
-        return "NODE_USE";
-    case NODE_INSERT:
-        return "NODE_INSERT";
-    case NODE_SEARCH:
-        return "NODE_SEARCH";
-    case NODE_DELETE:
-        return "NODE_DELETE";
-    case NODE_UPDATE:
-        return "NODE_UPDATE";
-    case NODE_EXIT:
-        return "NODE_EXIT";
-    case NODE_SUB_VALUES:
-        return "NODE_SUB_VALUES";
-    case NODE_STRING:
-        return "NODE_STRING";
-    case NODE_INTEGER:
-        return "NODE_INTEGER";
-    case NODE_CONDITION_EQUALS:
-        return "NODE_CONDITION_EQUALS";
-    case NODE_CONDITION_GREATER_THAN:
-        return "NODE_CONDITION_GREATER_THAN";
-    case NODE_CONDITION_LESS_THAN:
-        return "NODE_CONDITION_LESS_THAN";
-    }
-
-    return "[!] UNIDENTIFIED NODE : " + REQUIRED_NODE;
-}
+extern string nodeTypeToString(NODE_SET REQUIRED_NODE);
+extern unordered_map<TOKEN_SET, NODE_SET> REL_SET;
+extern unordered_map<TOKEN_SET, string> LOG_SET;
 
 class Parser
 {
 private:
-    int token_number;
     TOKEN *CURRENT_TOKEN;
-    AST_NODE *EVALUATED_NODE;
     vector<TOKEN *> LOCAL_COPY_TOKEN_STREAM;
+    int token_number;
     bool syntaxError;
-    TOKEN *proceed(TOKEN_SET REQUIRED_TOKEN);
-    TOKEN* checkAndProceed(TOKEN_SET REQUIRED_TOKEN);
-    void check(TOKEN_SET REQUIRED_CHECK_TOKEN);
+    string InputBuffer;
+
+    PARSER_STATUS throwVerboseSyntaxError(TOKEN_SET);
     PARSER_STATUS throwSyntaxError();
-    PARSER_STATUS parseCreate();
-    PARSER_STATUS parseUse();
-    PARSER_STATUS parseInsert();
-    PARSER_STATUS parseSearch();
-    PARSER_STATUS parseDelete();
-    PARSER_STATUS parseUpdate();
-    PARSER_STATUS parseExit();
-    AST_NODE *parseChildren();
-    AST_NODE *parseCondition();
-    AST_NODE *parseString_Integer();
+
+    void check(TOKEN_SET REQUIRED_CHECK_TOKEN);
+    TOKEN *proceed(TOKEN_SET);
+    TOKEN *checkAndProceed(TOKEN_SET);
+
+    AST_NODE *parseCONDITION();
+
+    PARSER_STATUS parseNEW();
+    PARSER_STATUS parseADD();
+    PARSER_STATUS parsePRINT();
+    PARSER_STATUS parseREMOVE();
+    PARSER_STATUS parseCREATE();
+    PARSER_STATUS parseUSE();
+    void parseUPDATE_VALUES(AST_NODE *&ROOT_NODE);
+    PARSER_STATUS parseUPDATE();
+    PARSER_STATUS parseSERVER();
+    PARSER_STATUS parseEXPORT();
+    PARSER_STATUS parseEXIT();
 
 public:
     Parser();
+    AST_NODE *EVALUATED_NODE;
+    int error_level;
+    void initialize(vector<TOKEN *> *TOKEN_LIST_ADDRESS, string inputBuffer);
     PARSER_STATUS parse();
-    void intialize(vector<TOKEN *> *TOKEN_LIST_ADDRESS);
 };
 
 #endif

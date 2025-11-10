@@ -9,7 +9,7 @@ using namespace std;
 #define DEFAULT "\e[0;37m"
 #define BLUE "\e[1;34m"
 #define YELLOW "\e[0;33m"
-#define DB_PROMPT "Dharana $ "
+#define DB_PROMPT "Astra DB $ "
 
 typedef enum
 {

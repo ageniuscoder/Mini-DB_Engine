@@ -1,6 +1,6 @@
-# 🧩 Dharana Query Language (DQL)
+# 🧩 Astra Query Language (Astra QL)
 
-DQL is a lightweight, SQL-like query language for managing databases, tables, and data inside the **Dharana** system. It supports creating databases and tables, inserting and querying data, performing updates, removing records, and managing server connections.
+Astra QL is a lightweight, SQL-like query language for managing databases, tables, and data inside the **Astra** system. It supports creating databases and tables, inserting and querying data, performing updates, removing records, and managing server connections.
 
 ---
 

@@ -235,7 +235,7 @@ public:
 
     bool handle_exit(AST_NODE *&action_node)
     {
-        cout << FAIL << "\n[~] Exiting SystemX" << DEFAULT << endl;
+        cout << FAIL << "\n[~] Exiting Astra DB" << DEFAULT << endl;
         exit(0);
     }
 

@@ -11,7 +11,6 @@ Astra QL is a lightweight, SQL-like query language for managing databases, table
 | **Database-level** | `create`, `use`, `export` |
 | **Table-level** | `new`, `add` |
 | **Data-level** | `print`, `remove`, `update` |
-| **Server-level** | `server socket_create`, `server socket_connect` |
 | **Utility** | `exit` |
 
 ---
@@ -89,23 +88,6 @@ update students -> gpa = 9.8
 update students :: id == 1 -> name = "lakshay", gpa = 8.62
 ```
 
-## 🌐 Server Commands
-
-### 9️⃣ `server socket_create`
-Create a server socket.
-
-```dql
-server socket_create <float_data> : <int_data>
-eg : server socket_create 127.0 : 8080
-```
-
-### 10️⃣ `server socket_connect`
-Connect to a server socket.
-
-```dql
-server socket_connect <float_data> : <int_data>
-eg : server socket_connect 127.0 : 8080
-```
 
 ## 🛠️ Utility Commands
 
